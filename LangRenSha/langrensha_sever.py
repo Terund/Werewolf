@@ -7,7 +7,7 @@ from langrensha import *
 
 udp_server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 host = ''
-port = 9099
+port = 19099
 buffer_size = 1024
 udp_server.bind((host, port)) # 绑定系统服务端
 
@@ -21,15 +21,17 @@ print('server start working...')
 if __name__ == '__main__':
     # 9 人局 狼人杀游戏
     num = 9
+    number = 0
     while len(addr_list) < num:
         name, addr = udp_server.recvfrom(1024)# 接收玩家的用户名和IP、端口
         name = name.decode('utf-8')
         if addr not in addr_list:# 判断玩家是否在列表中
+            number += 1
             # print(addr)
             addr_list.append(addr)# 将IP、端口添加到列表中
-            data[addr] = {'name': name, 'addr': addr}# 将玩家名字和IP、端口添加到字典里
+            data[addr] = {'number': number, 'addr': addr}# 将玩家名字和IP、端口添加到字典里
             print(data)
-            message = "游戏即将开始，请稍等...".encode('utf-8')
+            message = "您的编号为{}，游戏即将开始，请稍等...".format(number).encode('utf-8')
             udp_server.sendto(message, addr)# 将提示信息发送给客户端
 
     print("\033[1;32m玩家IP确定：\033[0m", addr_list)# 打印玩家列表
@@ -77,14 +79,10 @@ if __name__ == '__main__':
     for x in addr_list:
         udp_server.sendto(message, x)
 
-
-
-
-
-
-
-
-
-
-
-
+# import time
+#
+# last = time.time()
+# time.sleep(5)
+# now = time.time()
+#
+# print(now - last)
